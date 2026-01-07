@@ -1,0 +1,225 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1940 Alternate History - Project 1940</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Special+Elite&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #050507; color: #d1d1d1; font-family: 'Courier Prime', monospace; overflow: hidden; margin: 0; }
+        .typewriter { overflow: hidden; border-right: .15em solid #b91c1c; white-space: nowrap; margin: 0 auto; letter-spacing: .15em; animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite; }
+        @keyframes typing { from { width: 0 } to { width: 100% } }
+        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: #b91c1c; } }
+        @keyframes fade-in-left { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes fade-in-right { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes zoom-in { from { opacity: 0; scale: 0.9; } to { opacity: 1; scale: 1; } }
+        .animate-fade-in-left { animation: fade-in-left 1s ease-out forwards; }
+        .animate-fade-in-right { animation: fade-in-right 1s ease-out forwards; }
+        .animate-zoom-in { animation: zoom-in 0.8s ease-out forwards; }
+        @keyframes loading { 0% { width: 0%; transform: translateX(-100%); } 50% { width: 100%; transform: translateX(0); } 100% { width: 0%; transform: translateX(100%); } }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^18.0.0",
+    "react-dom/": "https://esm.sh/react-dom@^18.0.0/",
+    "react/": "https://esm.sh/react@^18.0.0/"
+  }
+}
+</script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const MAP_IMAGE_URL = 'https://d394jeh9729epj.cloudfront.net/8EXXgvEZ4be-KKKOTlQ4TzNK/e795c91f-6059-4066-8d5b-0eb955130a21.png';
+
+        const PHOTO_DOSSIERS = [
+            {
+                id: 'doc-korea',
+                url: 'https://d394jeh9729epj.cloudfront.net/8EXXgvEZ4be-KKKOTlQ4TzNK/f12880b0-21a3-41f4-8eb9-b5c35439a788.png',
+                initialX: 42, initialY: 45, rotation: -5, label: 'KOREA-INTEL-1940',
+                title: '대한제국 (The Empire of Korea)',
+                description: '극동의 패권국이자 군국주의의 광기에 휩싸인 제국.',
+                detailImages: [
+                    'https://d394jeh9729epj.cloudfront.net/8EXXgvEZ4be-KKKOTlQ4TzNK/0630790d-0676-4a5e-848d-3d3e77bc73ea.jpeg',
+                    'https://d394jeh9729epj.cloudfront.net/8EXXgvEZ4be-KKKOTlQ4TzNK/c2af14bc-d253-41f0-8ce2-b914daa730bc.jpeg'
+                ],
+                sections: {
+                    left: [
+                        { 
+                            title: '한중전쟁', 
+                            content: '한국인들이 흔히 지나사변이라 부르는 노구교 사건 이후 대한제국은 상하이, 칭다오, 광저우에 상륙하며 대륙을 압박했습니다. 그들은 베이징과 산둥을 점령하고 정복 과정에서 난징 대학살같은 끔찍한 악행을 저질렀으며 그 대가로 현재 전선이 고착화된 채 분노한 중국인들의 저항 속에서 고통받고 있습니다. 한계를 맞이한 대한은 전황을 바꾸기 위해서 새로운 변수가 필요할 것입니다.' 
+                        },
+                        { 
+                            title: '피나이 사건', 
+                            content: '1941년, 대한제국이 성조기를 단 피나이호를 침몰시키며 수많은 사상자가 발생했고 이 사건은 이후 대한제국을 향한 미합중국의 금수조치로 이어졌습니다. 현재 한국은 굶주리고 있으며 전쟁을 지속하기 위해서라면 그들은 잠자는 거인을 깨우려 할지도 모릅니다.' 
+                        }
+                    ],
+                    right: [
+                        { 
+                            title: '아주의 수호자', 
+                            content: '조선은 고종을 대신하여 다른 왕이 집권하며 역사의 분기점을 맞이했습니다. 새로운 왕은 세도정치를 타파하고 함대를 몰고 온 프랑스인들의 요구를 받아들이며 조선을 근대화해 동아시아 유일의 근대 국가로 만들었습니다. 이후 대한은 청나라와의 전쟁에서 만주를 차지하고 규슈, 훗카이도를 식민화하는 등 아름다운 시대(Belle Époque)를 보냈습니다.' 
+                        },
+                        { 
+                            title: '고삐풀린 군부', 
+                            content: '대공황 이후 굶주린 백성들은 지금의 대한을 있게해준 강력한 군대에게 의지하기 시작했으며 힘을 얻은 군부는 한국의 정치를 장악했습니다. 이후 한국은 군국주의에 빠진 채로 앞으로 나아가기만 하고 있으며 자신들이 지나온 길을 바라보고 광기를 멈추지 못한다면 대한제국은..' 
+                        }
+                    ]
+                }
+            },
+            {
+                id: 'doc-japan',
+                url: 'https://d394jeh9729epj.cloudfront.net/8EXXgvEZ4be-KKKOTlQ4TzNK/c9c4d07f-740f-40bf-91d1-e502840836f0.png',
+                initialX: 68, initialY: 12, rotation: 4, label: 'JAPAN-INTEL-1940',
+                title: '일본 제국 (Empire of Japan)',
+                description: '내전의 상흔을 딛고 일어서는 신생 제국.',
+                detailImages: [
+                    'https://d394jeh9729epj.cloudfront.net/8EXXgvEZ4be-KKKOTlQ4TzNK/d106f3fa-357d-4d46-9ac2-6234cb8d0357.webp',
+                    'https://d394jeh9729epj.cloudfront.net/8EXXgvEZ4be-KKKOTlQ4TzNK/a196eee6-14ce-4fb0-9419-913a5199c71c.jpeg'
+                ],
+                sections: {
+                    left: [
+                        { title: '보신전쟁', content: '격동의 개화기, 흑선내항 이후 존황양이를 외치며 일어난 내전은 일본을 폐허로 만들었으며 러시아가 유신파를 지지하자 한영동맹은 러시아의 남하를 막는다는 명분으로 집안싸움에 개입해 전을 국제전으로 만들었습니다. 그러던 중 근황군이 한국의 운양호를 침몰시키자 이를 명분삼아 한국은 규슈를 점령했고 결국 이러한 악재 속에 내전이 막부의 승리로 끝나자 외세는 그동안의 영수증을 들이밀며 일본을 시체 국가로 만들어 끝내 근대화의 기회를 잃고 말았습니다.' },
+                        { title: '또 한번의 내전', content: '1936년, 쇼군이 갑작스럽게 암살당하자 희망을 본 유신파는 다시 한번 기의하여 천황의 지지를 등에 엎고 내전에서 승리했습니다. 이후 그들은 일본 제국의 수립을 외치며 개혁의 불을 붙이기 시작했습니다.' }
+                    ],
+                    right: [
+                        { title: '쇼와 유신', content: '유신파는 천황의 정부를 자처하며 일본 전체를 뜯어고치기 시작했습니다. 그런 그들에게 가장 급선무는 반독립적 상태가 된 지방의 번들을 통합하는 것이며 회유와 협박 끝에 모든 다이묘들을 천황의 아래로 모으는데 성공했습니다. 그러나 내전 시기 잃었던 규슈와 훗카이도는 여전히 한국의 지배 아래있으며 일본은 아직 가야할 길이 한참 남았습니다.' },
+                        { title: '다가오는 폭풍', content: '한중전쟁을 일으킨 대한제국이 인도차이나를 점령하자 식민지를 지키기 위해 혈안이 된 서양은 일본을 지원하며 한국을 견제하기 시작했습니다. 이에 따라 여러 개혁이 진행되었으나 급진적인 국유화 정책에 불만을 품은 민중들은 점차 목소리를 높이고 있습니다.' }
+                    ]
+                }
+            },
+            {
+                id: 'doc-beiyang',
+                url: 'https://d394jeh9729epj.cloudfront.net/8EXXgvEZ4be-KKKOTlQ4TzNK/e2d9dff0-25d5-4ef7-9c8a-348603417ee5.png',
+                initialX: 15, initialY: 65, rotation: -2, label: 'CHINA-BEIYANG-1940',
+                title: '북양정부 (Beiyang Government)',
+                description: '청나라의 멸망과 군벌들의 권력 투쟁.',
+                detailImages: [
+                    'https://d394jeh9729epj.cloudfront.net/8EXXgvEZ4be-KKKOTlQ4TzNK/a629faa3-fe72-4cec-991f-d079d2bc8b33.jpeg',
+                    'https://d394jeh9729epj.cloudfront.net/8EXXgvEZ4be-KKKOTlQ4TzNK/c745a94f-48af-451f-a4d2-abb0f6e5f451.webp'
+                ],
+                sections: {
+                    left: [
+                        { title: '조청전쟁', content: '아편전쟁 이후 항상 세계의 중심이던 청나라는 백년국치가 시작되며 완전히 몰락했습니다. 이러한 상황에서 서태후와 대신들은 개항 후 계속해서 발전하던 조선을 견제하고 땅에 떨어진 중화의 권위를 바로잡기 위해 침공을 강행했으나 오히려 근대화된 조선의 군대에 청나라의 낡은 팔기군과 녹영군은 패배를 거듭하며 끝내 만주와 연해주를 넘기는 굴욕적인 조약을 맺고 말았습니다. 그러나 러시아가 이에 개입하여 조선을 압박, 연해주와 북만주를 할양받으며 청은 러시아와 조선 사이에 끼어 진퇴양난의 위기를 겪게 되었습니다.' },
+                        { title: '바람 앞에 등불', content: '여러 차례 시도된 개혁이 모두 실패하면서 청나라는 사상누각 상태가 되었습니다. 그러던 중 재정난을 해결하기 위한 철도 국유화 시도로 혁명의 불이 붙자 전국에서 혁명가들과 군벌들이 기의했고 위안스카이가 황제를 폐위시키며 최종적으로 청나라는 멸망하였습니다. 그러나 위안스카이가 칭제를 시도하다가 사망하고 권력의 공백이 생기자 군벌들이 권력을 노리며 무력을 동원한 정쟁이 시작되었습니다.' }
+                    ],
+                    right: [
+                        { title: '북양정부', content: '위안스카이 사후 북양군벌의 실력자들이 서로 싸우는 과정에서 1차 안직전쟁이 일어나 우페이푸와 직예군벌이 위기에 쳐했으나 중국의 통일을 원치않던 대한제국은 내전에 개입해 돤치루이에게 설득을 가장한 협박을 하며 전쟁을 종결시켰습니다. 이후 2차 안직전쟁이 일어나자 오랜 기간 복수를 준비하던 직예군벌은 빠르게 전쟁에서 승리했고 차오쿤을 대총통에 당선시키며 북양정부를 장악했습니다. 이후 허수아비 차오쿤과 실권자 우페이푸라는 공동의 적을 둔 안휘군벌의 잔당과 국민정부는 서로 협력하여 북경에 맞섰으나 이미 우위를 점한 우페이푸는 오히려 광동을 공격하려다가 취소하는 등 역으로 위협을 가하며 남방을 압박했습니다.' },
+                        { title: '최후의, 최후까지', content: '노구교 사건을 명분으로 대한제국이 이빨을 들어내며 중국을 침략하자 국민당과 북경정부는 연합하여 오족공화(五族共和)와 청천백일(青天白日)을 위해 싸우기 시작했습니다. 예상보다 강력한 저항에 대한제국은 베이징 점령에만 3개월이 걸리는 등 문제가 발생하기 시작했으며 싸우다가 죽는 한이 있어도 중국 대륙은 어떠한 타협도 없이 최후의, 최후까지 싸울 것입니다.' }
+                    ]
+                }
+            },
+            {
+                id: 'doc-kmt',
+                url: 'https://d394jeh9729epj.cloudfront.net/8EXXgvEZ4be-KKKOTlQ4TzNK/a04e6f97-c4df-41b6-9770-0fe5771b4610.png',
+                initialX: 75, initialY: 70, rotation: 6, label: 'CHINA-KMT-1940',
+                title: '중화민국 국민정부 (Nationalist Government)',
+                description: '남방의 혁명 세력과 북벌의 시련.',
+                detailImages: [
+                    'https://d394jeh9729epj.cloudfront.net/8EXXgvEZ4be-KKKOTlQ4TzNK/1f0f0efd-1692-4973-b64b-4de29b3afcbc.jpeg',
+                    'https://d394jeh9729epj.cloudfront.net/8EXXgvEZ4be-KKKOTlQ4TzNK/2048e50c-ce0a-449a-ade0-660d71be4127.webp'
+                ],
+                sections: {
+                    left: [
+                        { title: '군벌시대', content: '신해혁명 이후 위안스카이는 혁명 정신을 배반한 채 홍헌체제를 외치며 황제에 올랐습니다. 이후 호법전쟁이 일어나 칭제를 취소하고 위안스카이가 사망하자 중국은 여러 군벌들이 기의하며 군웅할거의 시대를 맞이했습니다. 서로 배신하고 배신하길 반복하며 군벌들이 서로 다투는 동안 국민당은 광저우에 광저우 국민정부를 수립하고 북벌을 위해 힘을 모으고 있었습니다.' },
+                        { title: '1차 북벌', content: '1926년, 쑨원의 의지를 이어받은 장제스의 주도 하에 국민혁명군은 파죽지세로 북상하기 시작했습니다. 이내 주요 도시들을 점령하자 장제스의 도박수는 겉으로 보기에 성공할 것같았습니다. 그러나 군벌들은 생각보다 강력했고 장제스는 그의 일생일대의 우한 회전에서 패배하며 난징과 우한을 코 앞에 두고 북벌의 꿈은 최종적으로 실패했습니다. 군벌군의 반격에 국민혁명군은 밀려나 다시 광동으로 돌아갈수 밖에 없었습니다.' }
+                    ],
+                    right: [
+                        { title: '대장정', content: '패전의 상처는 쓰라렸고 패잔병들은 모든 것을 잃은 채로 광동으로 가는 처절한 귀환길에 올랐습니다. 이 과정에서 북벌을 주도한 장제스는 끝내 실각하여 주요 요직에서 물러날 수 밖에 없었고 이번 북벌을 위해 모든 역량을 쥐어짜낸 광동의 경제는 붕괴하여 민심은 파탄나기 직전이었습니다. 모든 이들이 국민혁명의 실패를 예감하였고 장제스가 사라진 국민당에선 여러 정치적 암투가 시작되었습니다.' },
+                        { title: '2차 북벌', content: '장제스의 실각 이후 최종적으로 권력을 잡은 왕징웨이와 개조파는 여러 혼란을 수습하며 다시 칼날을 갈았고 황포군관학교라는 여전히 강력한 무기는 그들에게 든든한 버팀목이 되어주었습니다. 마침내 쑨촨창이 사망하고 오성연군이 혼란에 빠지자 기회를 본 국민당은 다시 한번 북진하여 난징에 입성하는 데 성공했습니다. 그러나 동쪽의 대한제국은 스스로 천명을 주장하며 상하이와 광저우, 난징을 점령한 채 우리에게 또 다른 시련을 강요하고 있습니다.' }
+                    ]
+                }
+            },
+            { id: 'doc-soviet', url: 'https://d394jeh9729epj.cloudfront.net/8EXXgvEZ4be-KKKOTlQ4TzNK/81f5e0fd-77a2-42ee-bc58-7be0b15d9f80.png', initialX: 20, initialY: 15, rotation: -5, label: 'SOVIET-INTEL-1940', title: '소비에트 사회주의 공화국 연방', description: '모스크바 공방전.' },
+            { id: 'doc-usa', url: 'https://d394jeh9729epj.cloudfront.net/8EXXgvEZ4be-KKKOTlQ4TzNK/614245b6-5b94-4ae9-958d-e1d2bb466a78.png', initialX: 52, initialY: 15, rotation: 12, label: 'USA-INTEL-1940', title: '미합중국 중립 해제', description: '미 의회의 무기대여법 및 대한제국 금수조치 결의안 통과.' }
+        ];
+
+        const MapDossier = ({ dossier, onClick }) => (
+            <div onClick={() => onClick(dossier)} className="absolute cursor-pointer transition-all duration-300 hover:scale-110 hover:z-50 group" style={{ left: `${dossier.initialX}%`, top: `${dossier.initialY}%`, transform: `rotate(${dossier.rotation}deg)`, width: '220px' }}>
+                <div className="bg-[#f2e6d0] p-2 pb-6 shadow-2xl border border-gray-400 relative">
+                    <div className="absolute top-[-8px] left-1/2 transform -translate-x-1/2 w-4 h-4 bg-red-700 rounded-full shadow-md z-10 border-2 border-red-900"></div>
+                    <div className="overflow-hidden bg-[#222] aspect-[4/3] flex items-center justify-center border border-gray-300">
+                        <img src={dossier.url} alt={dossier.label} className="w-full h-full object-cover opacity-90 transition-all duration-500 grayscale group-hover:grayscale-0" />
+                    </div>
+                    <div className="mt-3 text-center">
+                        <span className="text-[9px] font-bold text-gray-700 tracking-widest border-t border-gray-400 pt-1 block">{dossier.label}</span>
+                    </div>
+                </div>
+            </div>
+        );
+
+        const DossierDetail = ({ dossier, onClose }) => {
+            const { sections, detailImages } = dossier;
+            if (!sections) return (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-md px-4" onClick={onClose}>
+                    <div className="text-center animate-zoom-in" onClick={e => e.stopPropagation()}>
+                        <h2 className="text-4xl font-bold text-white mb-4 font-['Special_Elite']">{dossier.title}</h2>
+                        <p className="text-xl text-gray-400 max-w-2xl mx-auto">{dossier.description}</p>
+                        <button onClick={onClose} className="mt-12 px-12 py-3 bg-white/5 hover:bg-white/20 border border-white/30 text-white font-['Special_Elite'] tracking-[0.5em] transition-all hover:tracking-[0.7em] uppercase">뒤로가기</button>
+                    </div>
+                </div>
+            );
+            return (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-md overflow-y-auto py-12 px-4" onClick={onClose}>
+                    <div className="relative w-full max-w-[1400px] flex flex-col md:flex-row items-center justify-between gap-8 z-10" onClick={e => e.stopPropagation()}>
+                        <div className="w-full md:w-1/3 space-y-12 text-left animate-fade-in-left">
+                            {sections.left.map((sec, i) => (<section key={i}><h3 className="text-2xl font-bold text-white mb-2 font-['Special_Elite']">{sec.title}</h3><p className="text-sm leading-relaxed text-gray-300">{sec.content}</p></section>))}
+                        </div>
+                        <div className="w-full md:w-1/3 flex flex-col items-center gap-6 animate-zoom-in">
+                            {detailImages?.map((img, i) => (<img key={i} src={img} className={`w-80 border-4 border-white/10 shadow-2xl grayscale hover:grayscale-0 transition-all duration-700 ${i % 2 !== 0 ? 'transform -rotate-2' : ''}`} />))}
+                            <button onClick={onClose} className="mt-8 px-12 py-3 bg-white/5 hover:bg-white/20 border border-white/30 text-white font-['Special_Elite'] tracking-[0.5em] transition-all hover:tracking-[0.7em] uppercase">뒤로가기</button>
+                        </div>
+                        <div className="w-full md:w-1/3 space-y-12 text-right animate-fade-in-right">
+                            {sections.right.map((sec, i) => (<section key={i}><h3 className="text-2xl font-bold text-white mb-2 font-['Special_Elite']">{sec.title}</h3><p className="text-sm leading-relaxed text-gray-300">{sec.content}</p></section>))}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [selectedDossier, setSelectedDossier] = useState(null);
+            const [isLoaded, setIsLoaded] = useState(false);
+
+            useEffect(() => {
+                const timer = setTimeout(() => setIsLoaded(true), 1500);
+                return () => clearTimeout(timer);
+            }, []);
+
+            return (
+                <div className="relative w-screen h-screen bg-[#050507] overflow-hidden">
+                    <div className="absolute inset-0 bg-cover bg-center transition-opacity duration-[2000ms]" style={{ backgroundImage: `url(${MAP_IMAGE_URL})`, opacity: isLoaded ? 0.35 : 0 }} />
+                    <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,_transparent_10%,_rgba(0,0,0,0.9)_100%)]"></div>
+                    <div className="absolute top-8 left-8 z-20 border-l-4 border-red-700 pl-4 bg-black/40 backdrop-blur-sm p-3">
+                        <p className="text-red-700 text-[10px] tracking-[0.3em] font-bold uppercase mb-1">Observation Date</p>
+                        <h1 className="text-3xl font-['Special_Elite'] text-white uppercase">November 1, 1940</h1>
+                    </div>
+                    <div className={`relative w-full h-full transition-all duration-[1500ms] ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+                        {PHOTO_DOSSIERS.map((doc) => (<MapDossier key={doc.id} dossier={doc} onClick={setSelectedDossier} />))}
+                    </div>
+                    {selectedDossier && <DossierDetail dossier={selectedDossier} onClose={() => setSelectedDossier(null)} />}
+                    {!isLoaded && (
+                        <div className="absolute inset-0 z-[200] bg-black flex items-center justify-center flex-col space-y-6">
+                            <div className="typewriter text-red-700 font-['Special_Elite'] text-xl">INITIALIZING TACTICAL MAP...</div>
+                            <div className="w-64 h-1 bg-gray-900 overflow-hidden"><div className="h-full bg-red-700 animate-[loading_2s_infinite]"></div></div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
